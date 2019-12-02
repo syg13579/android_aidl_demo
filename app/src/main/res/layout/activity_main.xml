@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="rock.pp.com.aidl_demo.MainActivity">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="getMusicList"
+        android:text="获取音乐数量"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="bindService"
+        android:text="绑定服务"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="unbindService"
+        android:text="解绑服务"/>
+
+    <TextView
+        android:id="@+id/music_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="显示音乐列表"/>
+
+</LinearLayout>
