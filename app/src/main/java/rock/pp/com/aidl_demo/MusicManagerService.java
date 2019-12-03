@@ -18,24 +18,31 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
-
+ * 音乐管理的服务类
  */
 public class MusicManagerService extends Service {
 
     private static final String TAG =  MusicManagerService.class.getSimpleName();
 
-    // 支持并发读写
-    private ArrayList<Music> mMusicList = new ArrayList<>();
-    private List<INewMusicArrivedListener> mListenerList = new ArrayList<>();
-    private boolean isServiceDestroy = false;
+    private ArrayList<Music> mMusicList = new ArrayList<>();  //生成的音乐列表
+    private List<INewMusicArrivedListener> mListenerList = new ArrayList<>(); //客户端注册的接口列表
+    private boolean isServiceDestroy = false; //当前服务是否结束
     private int num = 0;
 
+    /**
+     * 解绑服务
+     * @param conn
+     */
     @Override
     public void unbindService(ServiceConnection conn) {
         super.unbindService(conn);
         Log.e(TAG,"unbindService-----");
     }
 
+    /**
+     * 服务端通过Binder实现AIDL的IMusicManager.Stub接口
+     * 这个类需要实现IMusicManager相关的抽象方法
+     */
     private Binder mBinder = new IMusicManager.Stub() {
         @Override
         public List<Music> getMusicList() throws RemoteException {
@@ -64,13 +71,13 @@ public class MusicManagerService extends Service {
     };
 
 
+    //新音乐到达后给客户端发送相关通知
     private void onNewMusicArrived(Music music) throws Exception {
         mMusicList.add(music);
         Log.e(TAG, "发送通知的数量: " + mMusicList.size());
         int num = mListenerList.size();
         for (int i = 0; i < num; ++i) {
             INewMusicArrivedListener listener = mListenerList.get(i);
-            Log.e(TAG, "发送通知: " + listener.toString());
             listener.onNewBookArrived(music);
         }
         for (Music b : mMusicList){
@@ -81,8 +88,10 @@ public class MusicManagerService extends Service {
     @Override public void onCreate() {
         super.onCreate();
         Log.e(TAG,"onCreate-------------");
+        //首先添加两首歌曲
         mMusicList.add(new Music("《封锁我一生》", "王杰"));
         mMusicList.add(new Music("《稻香》", "周杰伦"));
+        //音乐制造机器
         new Thread(new ServiceWorker()).start();
     }
 
@@ -91,6 +100,9 @@ public class MusicManagerService extends Service {
         super.onDestroy();
         Log.e(TAG,"onDestroy-----");
     }
+
+    //音乐制造机
+    //每5秒生产一首音乐
     private class ServiceWorker implements Runnable {
         @Override public void run() {
             while (!isServiceDestroy) {

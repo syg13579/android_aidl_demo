@@ -11,6 +11,6 @@ interface IMusicManager {
     void addMusic(in Music music); // 添加书籍
 
     void registerListener(INewMusicArrivedListener listener); // 注册接口
-    void unregisterListener(INewMusicArrivedListener listener); // 注册接口
+    void unregisterListener(INewMusicArrivedListener listener); // 注销接口
 
 }

@@ -24,10 +24,16 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView music_list;
 
-    private IMusicManager mRemoteMusicManager;
+    private IMusicManager mRemoteMusicManager; //音乐管理类  通过aidl文件编译生成的java类
 
 
+    //监听新音乐的到达的接口
     private INewMusicArrivedListener musicArrivedListener = new INewMusicArrivedListener.Stub() {
+        /**
+         * 服务端有新音乐生成
+         * @param newMusic
+         * @throws RemoteException
+         */
         @Override
         public void onNewBookArrived(Music newMusic) throws RemoteException {
             mHandler.obtainMessage(MESSAGE_ARRIVED, newMusic ).sendToTarget();
@@ -49,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
+    //绑定服务时的链接参数
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override public void onServiceConnected(ComponentName name, IBinder service) {
             IMusicManager musicManager = IMusicManager.Stub.asInterface(service);
